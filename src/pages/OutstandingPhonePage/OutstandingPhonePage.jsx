@@ -23,10 +23,10 @@ const OutstandingPhonePage = () => {
   const fetchProductAll = async (context) => {
     const limit = context?.queryKey && context?.queryKey[1];
     const search = context?.queryKey && context?.queryKey[2];
-    const sort = 'desc'; // Chuyển đổi giá trị sắp xếp
-    const selled = true
+    const sort = "desc"; // Chuyển đổi giá trị sắp xếp
+    const selled = true;
 
-    const res = await ProductService.getAllProduct(search, limit, sort,selled);
+    const res = await ProductService.getAllProduct(search, limit, sort, selled);
     return res;
   };
   const {
@@ -49,7 +49,9 @@ const OutstandingPhonePage = () => {
   return (
     <div>
       <MainContainer>
-        <OutstandingTitle style={{ textAlign: "center" }}>Điện thoại nổi bật</OutstandingTitle>
+        <OutstandingTitle style={{ textAlign: "center" }}>
+          Điện thoại bán chạy
+        </OutstandingTitle>
         <WapperProduct style={{ padding: "0px 5px" }}>
           <Loading isPending={isLoading || loading}>
             <WapperProduct style={{ marginBottom: "10px" }}>

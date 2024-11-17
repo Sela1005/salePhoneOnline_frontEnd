@@ -13,7 +13,7 @@ const Footer = () => {
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
         <div style={{ flex: 1, textAlign: "center" }}>
-          <strong>DIENTHOAIHU</strong>
+          <strong>PHONEW</strong>
         </div>
         <div style={{ flex: 1 }}>
           <strong>Tổng đài hỗ trợ miễn phí</strong>
@@ -42,7 +42,7 @@ const Footer = () => {
         color: "#999"
       }}>
         <p style={{ flex: 1, marginRight: "180px" }}>
-          © 2024, Công ty cổ phần DIENTHOAIHU. GPKD: 1234567 do Sở KH & ĐT TP.HCM cấp ngày 03/10/2024, Địa chỉ: 123 Sư Vạn Hạnh, TP. Hồ Chí Minh. Điện thoại: 0818238932. Đại diện pháp luật: Nguyễn Văn A. Email: DTH@gmail.com
+          © 2024, Công ty cổ phần PHONEW. GPKD: 1234567 do Sở KH & ĐT TP.HCM cấp ngày 03/10/2024, Địa chỉ: 123 Sư Vạn Hạnh, TP. Hồ Chí Minh. Điện thoại: 0818238932. Đại diện pháp luật: Nguyễn Văn A. Email: PHN@gmail.com
         </p>
         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
           <img src={boCongThuongIcon} alt="Đã thông báo Bộ Công Thương" style={{ height: "60px" }} />

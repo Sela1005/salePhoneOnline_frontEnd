@@ -10,32 +10,31 @@ import CardComponent from "../../components/CardComponent/CardComponent";
 import { DownOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
-const OutstandingPhonePage = () => {
+const RecommendedForYouPage = () => {
   const searchProduct = useSelector((state) => state?.product?.search);
-
   const searchDebounce = useDebounce(searchProduct, 1000);
   const [sortOrder, setSortOrder] = useState("none"); // State cho sắp xếp
 
   const [loading, setLoading] = useState(false);
+  const [limit, setLimit] = useState(10);
 
-  const [limit, setLimit] = useState(5);
-
-  const fetchProductAll = async (context) => {
+  const fetchRecommendedProducts = async (context) => {
     const limit = context?.queryKey && context?.queryKey[1];
     const search = context?.queryKey && context?.queryKey[2];
-    const sort = 'desc'; // Chuyển đổi giá trị sắp xếp
-    const selled = true
+    const sort = "asc"; // Cách sắp xếp cho các sản phẩm gợi ý (có thể tuỳ chỉnh)
+    const recommended = true; // Thêm điều kiện lấy sản phẩm được gợi ý
 
-    const res = await ProductService.getAllProduct(search, limit, sort,selled);
+    const res = await ProductService.getAllProduct(search, limit, sort, recommended);
     return res;
   };
+
   const {
     isLoading,
     data: products,
     isPlaceholderData,
   } = useQuery({
-    queryKey: ["products", limit, searchDebounce, sortOrder],
-    queryFn: fetchProductAll,
+    queryKey: ["recommendedProducts", limit, searchDebounce, sortOrder],
+    queryFn: fetchRecommendedProducts,
     retry: 3,
     retryDelay: 1000,
     keepPreviousData: true,
@@ -49,10 +48,12 @@ const OutstandingPhonePage = () => {
   return (
     <div>
       <MainContainer>
-        <OutstandingTitle style={{ textAlign: "center" }}>Điện thoại nổi bật</OutstandingTitle>
+        <OutstandingTitle style={{ textAlign: "center", marginTop: "20px" }}>
+          Gợi ý dành cho bạn
+        </OutstandingTitle>
         <WapperProduct style={{ padding: "0px 5px" }}>
           <Loading isPending={isLoading || loading}>
-            <WapperProduct style={{ marginBottom: "10px" }}>
+            <WapperProduct >
               {products?.data?.map((product) => {
                 return (
                   <CardComponent
@@ -72,31 +73,11 @@ const OutstandingPhonePage = () => {
             </WapperProduct>
           </Loading>
         </WapperProduct>
-        <div
-          onClick={goToProduct}
-          style={{
-            textAlign: "center",
-            fontWeight: "bold",
-            color: "#008bd4",
-            paddingBottom: "30px",
-            marginTop: "20px",
-            fontSize: "18px",
-            cursor: "pointer",
-          }}
-        >
-          <span>Xem thêm sản phẩm</span>
-          <DownOutlined
-            style={{
-              color: "#008bd4",
-              fontSize: "15px",
-              marginLeft: "5px",
-              paddingTop: "6px",
-            }}
-          />
-        </div>
+       
+     
       </MainContainer>
     </div>
   );
 };
 
-export default OutstandingPhonePage;
+export default RecommendedForYouPage;

@@ -25,12 +25,12 @@ const InfoSection = () => {
       <div style={{ display: "flex", alignItems: "center", gap: "10px", padding:"10px", border:" 1px solid #cccccc",borderRadius: "10px", width:"300px" }}>
         <img src={vanChuyenIcon} alt="Miễn phí vận chuyển" style={{ height: "60px" }} />
         <div style={{ textAlign: "left" }}>
-          <p style={{ margin: 0 }}>Miễn phí vận chuyển</p>
-          <p style={{ margin: 0 }}><strong>TOÀN QUỐC</strong>
+          <p style={{ margin: 0 }}>Vận chuyển TOÀN QUỐC</p>
+          <p style={{ margin: 0 }}><strong>Siêu tiết kiệm</strong>
           <p style={{ margin: 0 }}>Thanh toán khi nhận hàng</p>
           </p>
         </div>
-      </div>
+      </div>  
       <div style={{ display: "flex", alignItems: "center", gap: "10px", padding:"10px", border:" 1px solid #cccccc",borderRadius: "10px",width:"300px" }}>
         <img src={doiTraIcon} alt="Thủ tục đổi trả dễ dàng" style={{ height: "60px" }} />
         <div style={{ textAlign: "left" }}>

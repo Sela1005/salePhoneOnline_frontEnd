@@ -1,5 +1,5 @@
-import { Badge, Col, Popover } from "antd";
 import React, { useEffect, useState } from "react";
+import { Badge, Col, Popover } from "antd";
 import {
   WrapperHeader,
   WrapperTextHeader,
@@ -9,16 +9,10 @@ import {
   ProductTypeItem,
   WrapperContentPopup,
 } from "./style";
-import {
-  UserOutlined,
-  ShoppingCartOutlined,
-  CarOutlined,
-  CaretDownOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, ShoppingCartOutlined, CaretDownOutlined } from "@ant-design/icons";
 import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import Loading from "../LoadingComponent/Loading";
 import * as UserService from "../../services/UserServices";
 import { searchProduct } from "../../redux/slices/productSlide";
 import { resetUser } from "../../redux/slices/userSlide";
@@ -83,9 +77,15 @@ const HeaderComponent = () => {
   const handleNavigateProfile = () => {
     navigate("/profile-user");
   };
+
   const handleNavigateMyOrder = () => {
     navigate("/myorder");
   };
+
+  const handleNavigateContact = () => {
+    navigate("/contact");  // Giả sử bạn có một trang liên hệ
+  };
+
   const content = (
     <div>
       {user?.isAdmin && (
@@ -115,21 +115,22 @@ const HeaderComponent = () => {
       <WrapperHeader>
         <Col span={4}>
           <WrapperTextHeader onClick={handleNavigateLogo}>
-            <img src={logo} style={{height: '70px',paddingTop: '5px'}}/>
+            <img src={logo} style={{ height: '70px', paddingTop: '5px' }} />
           </WrapperTextHeader>
         </Col>
 
-        <Col span={8}>
+        <Col span={10}>
           <ButtonInputSearch
             placeholder="Tìm kiếm... "
             size="large"
             onChange={onSearch}
           />
         </Col>
+
         <Col span={4}>
           <WrapperShoppingHeader
             onClick={() => navigate("/order")}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", fontWeight:"500 " }}
           >
             <Badge count={order?.orderItems?.length} size="small">
               <ShoppingCartOutlined
@@ -143,6 +144,7 @@ const HeaderComponent = () => {
             Giỏ Hàng
           </WrapperShoppingHeader>
         </Col>
+
         <Col span={3}>
           <Popover
             placement="bottom"
@@ -170,7 +172,7 @@ const HeaderComponent = () => {
                 </div>
               </WrapperAccountHeader>
             ) : (
-              <WrapperAccountHeader onClick={handleNavigateLogin}>
+              <WrapperAccountHeader onClick={handleNavigateLogin} style={{ cursor: "pointer", fontWeight:"500 " }}>
                 <UserOutlined style={{ fontSize: "20px" }} />
                 Đăng Nhập
               </WrapperAccountHeader>
@@ -178,12 +180,14 @@ const HeaderComponent = () => {
           </Popover>
         </Col>
 
-        {/* <Col span={4}>
-          <WrapperShipperHeader>
-            <CarOutlined style={{ fontSize: "23px" }} />
-            <span>Tra cứu đơn hàng</span>
-          </WrapperShipperHeader>
-        </Col> */}
+        {/* Thêm phần liên hệ vào bên phải của đăng nhập */}
+        <Col span={3}>
+          <WrapperAccountHeader onClick={handleNavigateContact} style={{ cursor: "pointer", fontWeight:"500 " }}>
+            HOTLINE:
+
+            1900 1234
+          </WrapperAccountHeader>
+        </Col>
       </WrapperHeader>
 
       <div
@@ -191,7 +195,7 @@ const HeaderComponent = () => {
           width: "92.15%",
           textAlign: "center",
           position: "relative",
-          margin: " 0 auto",
+          margin: "0 auto",
           background: "#008bd4",
           paddingLeft: "120px",
         }}

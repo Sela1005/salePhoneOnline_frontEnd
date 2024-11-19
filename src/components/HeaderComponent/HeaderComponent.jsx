@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Badge, Col, Popover } from "antd";
+import { Badge, Col, Flex, Popover } from "antd";
 import {
   WrapperHeader,
   WrapperTextHeader,
@@ -12,6 +12,11 @@ import {
   UserOutlined,
   ShoppingCartOutlined,
   CaretDownOutlined,
+  HomeOutlined,
+  MobileOutlined,
+  ContactsOutlined,
+  IdcardOutlined,
+  InboxOutlined,
 } from "@ant-design/icons";
 import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import { useNavigate } from "react-router-dom";
@@ -164,13 +169,23 @@ const HeaderComponent = () => {
           background: "#008bd4",
           padding: "10px 0",
           position: "relative",
+          fontSize:"15px",
+          fontWeight:"bold"
+
         }}
-      >
+      ><div style={{display:"Flex"}}>
+        <div style={{ padding: "0", color: "#fff", cursor: "pointer", fontSize:"18px" }}><HomeOutlined /></div>
         <div
-          style={{ padding: "0 15px", color: "#fff", cursor: "pointer" }}
+          style={{ padding: "0 15px", color: "#fff", cursor: "pointer", fontSize:"18px" }}
           onClick={() => navigate("/")}
         >
           Trang chủ
+        
+        </div>
+      </div>
+       <div style={{display:"Flex",paddingLeft:"20px"}}>
+        <div style={{ padding: "0 10px", color: "#fff", cursor: "pointer", fontSize:"18px" }}>
+        <MobileOutlined />
         </div>
         <div
           style={{
@@ -178,10 +193,12 @@ const HeaderComponent = () => {
             color: "#fff",
             cursor: "pointer",
             position: "relative",
+             fontSize:"18px"
           }}
           onMouseOver={() => setShowPopup(true)}
           onMouseOut={() => setTimeout(() => setShowPopup(false), 300)}
         >
+         
           Điện thoại
           {showPopup && typeProducts?.length > 0 && (
             <div
@@ -204,18 +221,31 @@ const HeaderComponent = () => {
             </div>
           )}
         </div>
+       </div>
+
+       <div style={{display:"Flex"}}>
+       <div style={{color: "#fff", cursor: "pointer", fontSize:"18px", paddingLeft:"30px" }}>
+       <InboxOutlined />
+        </div>
         <div
-          style={{ padding: "0 15px", color: "#fff", cursor: "pointer" }}
+          style={{ padding: "0 15px", color: "#fff", cursor: "pointer", fontSize:"18px" }}
           onClick={() => navigate("/contact")}
         >
           Liên hệ
         </div>
+       </div>
+      <div style={{display:"Flex"}}>
+        <div style={{color: "#fff", cursor: "pointer", fontSize:"18px", paddingLeft:"30px" }}>
+        <IdcardOutlined />
+        </div>
         <div
-          style={{ padding: "0 15px", color: "#fff", cursor: "pointer" }}
+          style={{ padding: "0 15px", color: "#fff", cursor: "pointer", fontSize:"18px" }}
           onClick={() => navigate("/about")}
         >
           Giới thiệu
         </div>
+      </div>
+      
       </div>
     </div>
   );

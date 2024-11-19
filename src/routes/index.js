@@ -12,6 +12,7 @@ import ProfilePage from "../pages/Profile/ProfilePage";
 import OutstandingPhonePage from "../pages/OutstandingPhonePage/OutstandingPhonePage";
 import OrderInfo from "../pages/OderDetail/OrderDetail";
 import MyOrder from "../pages/MyOder/MyOderPage";
+import SortByPriceProduct from "../pages/SortByPriceProductPage/SortByPriceProduct";
 
 export const routes = [
     {
@@ -62,6 +63,11 @@ export const routes = [
     {
         path: '/product/:type',
         page: TypeProductPage,
+        isShowHeader: true
+    },
+    {
+        path: '/productPrice/:min/:max',
+        page: SortByPriceProduct,
         isShowHeader: true
     },
     {

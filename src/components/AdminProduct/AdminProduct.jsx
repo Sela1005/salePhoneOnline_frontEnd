@@ -13,6 +13,7 @@ import {
 import {
   DeleteOutlined,
   EditOutlined,
+  InfoCircleOutlined,
   PlusSquareTwoTone,
   SearchOutlined,
   UploadOutlined,
@@ -55,7 +56,6 @@ const AdminProduct = () => {
     type: "",
     price: "",
     countInStock: "",
-    rating: "",
     description: "",
     newType: "",
     screenSize: "",
@@ -75,19 +75,43 @@ const AdminProduct = () => {
   const [form] = Form.useForm();
 
   const mutation = useMutationHooks((data) => {
-    const { name, image, type, price, countInStock, rating, description } =
-      data;
+    const {
+      name,
+      image,
+      type,
+      price,
+      countInStock,
+      description,
+      screenSize,
+      chipset,
+      ram,
+      storage,
+      battery,
+      screenResolution,
+    } = data;
     const res = ProductService.createProduct({
       name,
       image,
       type,
       price,
       countInStock,
-      rating,
       description,
+      screenSize,
+      chipset,
+      ram,
+      storage,
+      battery,
+      screenResolution,
     });
     return res;
   });
+  const checkValueStateDetail =
+    stateProductDetails?.screenSize ||
+    stateProductDetails?.chipset ||
+    stateProductDetails?.ram ||
+    stateProductDetails?.storage ||
+    stateProductDetails?.battery ||
+    stateProductDetails?.screenResolution;
   const mutationUpdate = useMutationHooks((data) => {
     const { id, token, ...rests } = data;
     const res = ProductService.updateProduct(id, token, { ...rests });
@@ -166,11 +190,18 @@ const AdminProduct = () => {
     if (dataUpdated?.status === "OK") {
       message.success(dataUpdated?.message);
       handleCancelDrawer();
+      setStateProduct({
+        ...stateProductDetails,
+        isUpdating: false,
+      });
     } else if (dataUpdated?.status === "ERR") {
       message.error(dataUpdated?.message);
+      setStateProduct({
+        ...stateProductDetails,
+        isUpdating: false,
+      });
     }
   }, [dataUpdated]);
-  console.log("stateProduct", stateProduct);
 
   const onFinish = () => {
     const params = {
@@ -182,7 +213,6 @@ const AdminProduct = () => {
         stateProduct?.type === "add_type"
           ? stateProduct.newType
           : stateProduct.type,
-      rating: stateProduct?.rating,
       description: stateProduct?.description,
       screenSize: stateProduct?.screenSize,
       chipset: stateProduct?.chipset,
@@ -239,9 +269,14 @@ const AdminProduct = () => {
       type: "",
       price: "",
       countInStock: "",
-      rating: "",
       description: "",
       newType: "",
+      screenSize: "",
+      chipset: "",
+      ram: "",
+      storage: "",
+      battery: "",
+      screenResolution: "",
     });
     form.resetFields();
   };
@@ -252,18 +287,7 @@ const AdminProduct = () => {
       [e.target.name]: e.target.value,
     });
   };
-  const handleOnChangeInputNumber = (value, name) => {
-    setStateProduct({
-      ...stateProduct,
-      [name]: value,
-    });
-  };
-  const handleOnChangeInputNumberDetails = (value, name) => {
-    setStateProductDetails({
-      ...stateProductDetails,
-      [name]: value,
-    });
-  };
+
   const handleOnchangeDetails = (e) => {
     setStateProductDetails({
       ...stateProductDetails,
@@ -317,8 +341,13 @@ const AdminProduct = () => {
           type: res?.data?.type,
           price: res?.data?.price,
           countInStock: res?.data?.countInStock,
-          rating: res?.data?.rating,
           description: res?.data?.description,
+          screenSize: res?.data?.screenSize,
+          chipset: res?.data?.chipset,
+          ram: res?.data?.ram,
+          storage: res?.data?.storage,
+          battery: res?.data?.battery,
+          screenResolution: res?.data?.screenResolution,
         });
       }
       setIsLoadingUpdate(false);
@@ -346,11 +375,11 @@ const AdminProduct = () => {
       isUpdating: true, // Chuyển sang trạng thái cập nhật
     });
     setIsOpenDrawer(true);
+    fetchDetailsProduct(rowSelected);
   };
   const headers = [
     { label: "Name products", key: "name" },
     { label: "Price", key: "price" },
-    { label: "Rating", key: "rating" },
     { label: "Type", key: "type" },
   ];
 
@@ -494,11 +523,6 @@ const AdminProduct = () => {
       sorter: (a, b) => parseFloat(a.price) - parseFloat(b.price),
     },
     {
-      title: "Đánh giá",
-      dataIndex: "rating",
-      sorter: (a, b) => a.rating - b.rating,
-    },
-    {
       title: "Thể loại",
       dataIndex: "type",
       ...getColumnSearchProps("type"),
@@ -565,6 +589,7 @@ const AdminProduct = () => {
         open={isModalOpen}
         onCancel={handleCancel}
         footer={null}
+        width={700}
       >
         <Loading isPending={isLoadingProducts}>
           <Form
@@ -601,8 +626,9 @@ const AdminProduct = () => {
             </Form.Item>
 
             <Form.Item
-              label="Loại sản phẩm:"
+              label="Hãng:"
               name="type"
+              tooltip="nếu không có hãng bạn muốn, hãy thêm hãng mới"
               rules={[
                 {
                   required: true,
@@ -681,24 +707,16 @@ const AdminProduct = () => {
               ]}
             >
               <TextArea
+                showCount
+                maxLength={1500}
                 value={stateProduct.description}
                 onChange={handleOnchange}
                 name="description"
               />
             </Form.Item>
-            <Form.Item label="Đánh giá:" name="rating">
-              <InputNumber
-                value={stateProduct.rating}
-                onChange={(value) => handleOnChangeInputNumber(value, "rating")}
-                name="rating"
-                defaultValue={1}
-                max={5}
-                min={1}
-              />
-            </Form.Item>
-
             <Form.Item
               label="Hình ảnh:"
+              tooltip="chọn tối đa 5 ảnh"
               name="image"
               rules={[
                 {
@@ -740,17 +758,11 @@ const AdminProduct = () => {
               checked={isSpecEnabled}
               onChange={(e) => setIsSpecEnabled(e.target.checked)}
             >
-              Cập nhật thông số kỹ thuật
+              Thêm thông số kỹ thuật
             </Checkbox>
             {isSpecEnabled && (
               <div>
                 <h4>Thông số kỹ thuật:</h4>
-                {/* <Input
-                  placeholder="Kích thước màn hình"
-                  value={stateProduct?.screenSize || ""}
-                  onChange={handleOnchange}
-                  name="screenSize"
-                /> */}
                 <Form.Item label="Kích thước màn hình:" name="screenSize">
                   <InputComponent
                     value={stateProduct?.screenSize}
@@ -758,42 +770,51 @@ const AdminProduct = () => {
                     name="screenSize"
                   />
                 </Form.Item>
-                <Input
-                  placeholder="Chipset"
-                  value={stateProduct?.chipset}
-                  onChange={handleOnchange}
-                  name="chipset"
-                />
-                <Input
-                  placeholder="Dung lượng RAM"
-                  value={stateProduct?.ram}
-                  onChange={handleOnchange}
-                  name="ram"
-                />
-                <Input
-                  placeholder="Bộ nhớ trong"
-                  value={stateProduct?.storage}
-                  onChange={handleOnchange}
-                  name="storage"
-                />
-                <Input
-                  placeholder="Pin"
-                  value={stateProduct?.battery}
-                  onChange={handleOnchange}
-                  name="battery"
-                />
-                <Input
-                  placeholder="Độ phân giải màn hình"
-                  value={stateProduct?.screenResolution}
-                  onChange={handleOnchange}
+                <Form.Item label="Chipset:" name="chipset">
+                  <InputComponent
+                    value={stateProduct?.chipset}
+                    onChange={handleOnchange}
+                    name="chipset"
+                  />
+                </Form.Item>
+                <Form.Item label="Dung lượng RAM:" name="ram">
+                  <InputComponent
+                    value={stateProduct?.ram}
+                    onChange={handleOnchange}
+                    name="ram"
+                  />
+                </Form.Item>
+                <Form.Item label="Bộ nhớ trong:" name="storage">
+                  <InputComponent
+                    value={stateProduct?.storage}
+                    onChange={handleOnchange}
+                    name="storage"
+                  />
+                </Form.Item>
+
+                <Form.Item label="Pin:" name="battery">
+                  <InputComponent
+                    value={stateProduct?.battery}
+                    onChange={handleOnchange}
+                    name="battery"
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Độ phân giải màn hình:"
                   name="screenResolution"
-                />
+                >
+                  <InputComponent
+                    value={stateProduct?.screenResolution}
+                    onChange={handleOnchange}
+                    name="screenResolution"
+                  />
+                </Form.Item>
               </div>
             )}
 
             <Form.Item
               wrapperCol={{
-                offset: 17,
+                offset: 19,
                 span: 16,
               }}
             >
@@ -906,22 +927,11 @@ const AdminProduct = () => {
               ]}
             >
               <TextArea
+                showCount
+                maxLength={1500}
                 value={stateProductDetails.description}
                 onChange={handleOnchangeDetails}
                 name="description"
-              />
-            </Form.Item>
-
-            <Form.Item label="Đánh giá:" name="rating">
-              <InputNumber
-                value={stateProduct.rating}
-                onChange={(value) =>
-                  handleOnChangeInputNumberDetails(value, "rating")
-                }
-                name="rating"
-                defaultValue={1}
-                max={5}
-                min={1}
               />
             </Form.Item>
             <Form.Item
@@ -938,8 +948,6 @@ const AdminProduct = () => {
                 onChange={handleOnchangeAvatarDetails}
                 maxCount={5}
               >
-                {" "}
-                {/* Bạn có thể cho phép tối đa 5 ảnh */}
                 <Button icon={<UploadOutlined />}>Select Files</Button>
               </WapperUploadFile>
               {stateProductDetails?.image &&
@@ -963,7 +971,57 @@ const AdminProduct = () => {
                   </div>
                 )}
             </Form.Item>
+            {checkValueStateDetail && (
+              <div>
+                <h4>Thông số kỹ thuật:</h4>
+                <Form.Item label="Kích thước màn hình:" name="screenSize">
+                  <InputComponent
+                    value={stateProductDetails?.screenSize}
+                    onChange={handleOnchangeDetails}
+                    name="screenSize"
+                  />
+                </Form.Item>
+                <Form.Item label="Chipset:" name="chipset">
+                  <InputComponent
+                    value={stateProductDetails?.chipset}
+                    onChange={handleOnchangeDetails}
+                    name="chipset"
+                  />
+                </Form.Item>
+                <Form.Item label="Dung lượng RAM:" name="ram">
+                  <InputComponent
+                    value={stateProductDetails?.ram}
+                    onChange={handleOnchangeDetails}
+                    name="ram"
+                  />
+                </Form.Item>
+                <Form.Item label="Bộ nhớ trong:" name="storage">
+                  <InputComponent
+                    value={stateProductDetails?.storage}
+                    onChange={handleOnchangeDetails}
+                    name="storage"
+                  />
+                </Form.Item>
 
+                <Form.Item label="Pin:" name="battery">
+                  <InputComponent
+                    value={stateProductDetails?.battery}
+                    onChange={handleOnchangeDetails}
+                    name="battery"
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Độ phân giải màn hình:"
+                  name="screenResolution"
+                >
+                  <InputComponent
+                    value={stateProductDetails?.screenResolution}
+                    onChange={handleOnchangeDetails}
+                    name="screenResolution"
+                  />
+                </Form.Item>
+              </div>
+            )}
             <Form.Item
               wrapperCol={{
                 offset: 20,

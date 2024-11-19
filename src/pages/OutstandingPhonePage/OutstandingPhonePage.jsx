@@ -26,7 +26,12 @@ const OutstandingPhonePage = () => {
     const sort = "desc"; // Chuyển đổi giá trị sắp xếp
     const selled = true;
 
-    const res = await ProductService.getAllProduct(search, limit, sort, selled);
+    const res = await ProductService.getAllProductSortSelled(
+      search,
+      limit,
+      sort,
+      selled
+    );
     return res;
   };
   const {
@@ -49,8 +54,8 @@ const OutstandingPhonePage = () => {
   return (
     <div>
       <MainContainer>
-        <OutstandingTitle style={{ textAlign: "center" }}>
-          Điện thoại bán chạy
+        <OutstandingTitle style={{ textAlign: "center", marginTop: "20px" }}>
+          Sản phẩm bán chạy
         </OutstandingTitle>
         <WapperProduct style={{ padding: "0px 5px" }}>
           <Loading isPending={isLoading || loading}>

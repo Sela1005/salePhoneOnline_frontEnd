@@ -187,7 +187,11 @@ const OrderInfo = ({ orderId }) => {
         <br />
         <Text>Tổng cộng: <PriceText>{order.totalPrice} VND</PriceText></Text>
       </div>
+      <div>
+      </div>
+     
     </>
+    
   );
 };
 

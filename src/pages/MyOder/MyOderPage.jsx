@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Footer from "../../components/Footer/Footer";
 import {
   Button,
   Card,
@@ -531,8 +532,11 @@ const MyOrderPage = () => {
           ) : (
             <div>Đang tải chi tiết đơn hàng...</div>
           )}
+          
         </Loading>
+
       </ModalComponent>
+      <Footer/>
     </Loading>
   );
 };

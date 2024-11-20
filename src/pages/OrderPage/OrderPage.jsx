@@ -32,6 +32,7 @@ import Loading from "../../components/LoadingComponent/Loading";
 import { useNavigate } from "react-router-dom";
 import { TagOutlined } from "@ant-design/icons";
 import * as DiscountService from "../../services/DiscountServices";
+import Footer from "../../components/Footer/Footer";
 import { useQuery } from "@tanstack/react-query";
 
 const OderPage = () => {
@@ -744,6 +745,7 @@ const OderPage = () => {
             </Form.Item>
           </Form>
         </Loading>
+        <Footer/>
       </ModalComponent>
     </div>
   );

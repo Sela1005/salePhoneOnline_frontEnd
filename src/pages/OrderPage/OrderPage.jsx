@@ -1,5 +1,14 @@
 import { DeleteOutlined } from "@ant-design/icons";
-import { Checkbox, Form, InputNumber, message, Modal, Button, Card, Input } from "antd";
+import {
+  Checkbox,
+  Form,
+  InputNumber,
+  message,
+  Modal,
+  Button,
+  Card,
+  Input,
+} from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import ButtonComponent from "../../components/ButtonComopnent/ButtonComponent";
 import {
@@ -313,9 +322,23 @@ const OderPage = () => {
   };
 
   return (
-    <div style={{ background: "#f5f5fa", width: "100%", height: "150vh", marginTop: "-20px"}}>
-      <div style={{ height: "100%", width: "1270px", margin: "0 auto", paddingTop:"20px" }}>
-        <h3 style={{fontSize:'20px', paddingLeft:"13px"}}>Giỏ hàng</h3>
+    <div
+      style={{
+        background: "#f5f5fa",
+        width: "100%",
+        height: "150vh",
+        marginTop: "-20px",
+      }}
+    >
+      <div
+        style={{
+          height: "100%",
+          width: "1270px",
+          margin: "0 auto",
+          paddingTop: "20px",
+        }}
+      >
+        <h3 style={{ fontSize: "20px", paddingLeft: "13px" }}>Giỏ hàng</h3>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <WrapperLeft>
             <WrapperStyleHeader>
@@ -576,82 +599,83 @@ const OderPage = () => {
               <a onClick={showModal}>Nhập mã giảm giá</a>
             </div>
             <Modal
-  title="Chọn Mã ưu đãi"
-  visible={isModalVisible}
-  onOk={handleOk}
-  onCancel={handleCancel}
-  footer={[
-    <Button key="back" onClick={handleCancel}>
-      Trở lại
-    </Button>,
-  ]}
->
-  <div>
-    <div style={{ marginBottom: "10px" }}>
-      <Input
-        placeholder="Mã giảm giá"
-        style={{
-          width: "100%",
-          padding: "10px",
-          borderRadius: "10px",
-        }}
-        value={checkDiscountCode}
-        onChange={(e) => setCheckDiscountCode(e.target.value)}
-      />
-      <ButtonComponent
-        onClick={handleCheckDiscount}
-        type="primary"
-        style={{ marginTop: "10px", width: "100%" }}
-        textButton={"Áp dụng"}
-      >
-      </ButtonComponent>
-    </div>
-
-    <div>
-      <h3>Mã ưu đãi khi mua sản phẩm</h3>
-
-      {/* Container có thanh cuộn dọc */}
-      <div
-        style={{
-          maxHeight: "200px",
-          overflowY: "auto",
-          border: "1px solid #ddd",
-          padding: "10px",
-        }}
-      >
-        {Array.isArray(dataDiscount) &&
-          dataDiscount?.map((discount) => {
-            return (
-              <Card
-                key={discount._id}
-                style={{ marginBottom: "10px" }}
-                bordered={true}
-                hoverable
-                onClick={() => setCheckDiscountCode(discount.code)}
-              >
-                <p style={{ fontSize: "15px" }}>
-                  Nhập mã{" "}
-                  <span
+              title="Chọn Mã ưu đãi"
+              visible={isModalVisible}
+              onOk={handleOk}
+              onCancel={handleCancel}
+              footer={[
+                <Button key="back" onClick={handleCancel}>
+                  Trở lại
+                </Button>,
+              ]}
+            >
+              <div>
+                <div style={{ marginBottom: "10px" }}>
+                  <Input
+                    placeholder="Mã giảm giá"
                     style={{
-                      fontWeight: "bold",
-                      color: "red",
-                      fontSize: "18px",
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "10px",
+                    }}
+                    value={checkDiscountCode}
+                    onChange={(e) => setCheckDiscountCode(e.target.value)}
+                  />
+                  <ButtonComponent
+                    onClick={handleCheckDiscount}
+                    type="primary"
+                    style={{ marginTop: "10px", width: "100%" }}
+                    textButton={"Áp dụng"}
+                  ></ButtonComponent>
+                </div>
+
+                <div>
+                  <h3>Mã ưu đãi khi mua sản phẩm</h3>
+
+                  {/* Container có thanh cuộn dọc */}
+                  <div
+                    style={{
+                      maxHeight: "200px",
+                      overflowY: "auto",
+                      border: "1px solid #ddd",
+                      padding: "10px",
                     }}
                   >
-                    {discount.code}
-                  </span>{" "}
-                  để giảm {discount.discountPercentage}% khi thanh toán.
-                </p>
-                <div>
-                  Số lượng giảm giá còn lại: {discount.remainingDiscount}
+                    {Array.isArray(dataDiscount) &&
+                      dataDiscount?.map((discount) => {
+                        return (
+                          <Card
+                            key={discount._id}
+                            style={{ marginBottom: "10px" }}
+                            bordered={true}
+                            hoverable
+                            onClick={() => setCheckDiscountCode(discount.code)}
+                          >
+                            <p style={{ fontSize: "15px" }}>
+                              Nhập mã{" "}
+                              <span
+                                style={{
+                                  fontWeight: "bold",
+                                  color: "red",
+                                  fontSize: "18px",
+                                }}
+                              >
+                                {discount.code}
+                              </span>{" "}
+                              để giảm {discount.discountPercentage}% khi thanh
+                              toán.
+                            </p>
+                            <div>
+                              Số lượng giảm giá còn lại:{" "}
+                              {discount.remainingDiscount}
+                            </div>
+                          </Card>
+                        );
+                      })}
+                  </div>
                 </div>
-              </Card>
-            );
-          })}
-      </div>
-    </div>
-  </div>
-</Modal>
+              </div>
+            </Modal>
           </WrapperRight>
         </div>
       </div>
@@ -745,7 +769,6 @@ const OderPage = () => {
             </Form.Item>
           </Form>
         </Loading>
-        <Footer/>
       </ModalComponent>
     </div>
   );

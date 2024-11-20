@@ -124,7 +124,7 @@ const AdminOrder = () => {
       title: "Phí giao hàng",
       dataIndex: "shippingPrice",
       sorter: (a, b) => a.shippingPrice - b.shippingPrice,
-      width: 100,
+      width: 120,
     },
     {
       title: "Phương thức thanh toán",

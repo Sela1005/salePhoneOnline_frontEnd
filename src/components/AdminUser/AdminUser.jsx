@@ -388,6 +388,17 @@ const AdminUser = ({ theme, setTheme }) => {
       </WrapperHeader>
       <div style={{ marginTop: "30px" }}>
         <TableComponent
+          title={() => (
+            <div
+              style={{
+                fontSize: "18px",
+                color: "rgb(77 164 210)",
+                fontWeight: "bold",
+              }}
+            >
+              Tổng số lượng tài khoản: {users?.data.length}
+            </div>
+          )}
           borderColor={"red"}
           filename={"User"}
           headers={headers}

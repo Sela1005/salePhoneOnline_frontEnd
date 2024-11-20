@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { WrapperHeader } from "./style";
 import TableComponent from "../TableComponent/TableComponent";
 import { useSelector } from "react-redux";
@@ -14,13 +14,12 @@ import * as OrderService from "../../services/OrderServices";
 import { orderContant } from "../../contant";
 import PieChartComponent from "./PieChart";
 import { useMutationHooks } from "../../hooks/useMutationHook";
-import { Button, Dropdown, Image, Menu, Table } from "antd";
+import { Button, Dropdown, Image, Menu, Space, Table } from "antd";
 
 const AdminOrder = () => {
   const [rowSelected, setRowSelected] = useState("");
   const [dataTable, setDataTable] = useState([]);
   const user = useSelector((state) => state?.user);
-
   const getAllOrder = async () => {
     const res = await OrderService.getAllOrder(user?.access_token);
     return res;
@@ -30,6 +29,7 @@ const AdminOrder = () => {
   const { isPending: isLoadingOrders, data: orders } = queryOrder;
 
   const headers = [
+    { label: "Mã đơn hàng", key: "key" },
     { label: "Tên Người dùng", key: "userName" },
     { label: "Số điện thoại", key: "phone" },
     { label: "Địa chỉ", key: "address" },
@@ -44,25 +44,29 @@ const AdminOrder = () => {
     { label: "Phần trăm giảm giá", key: "discountPercentage" },
     { label: "Ngày đặt", key: "createdAt" },
     { label: "Ngày cập nhật", key: "updatedAt" },
-
   ];
-
   const columns = [
     {
-      title: "Tên người mua",
-      dataIndex: "userName",
-      sorter: (a, b) => a.userName.length - b.userName.length,
-    },
-    {
-      title: "Số điện thoại",
-      dataIndex: "phone",
-      sorter: (a, b) => a.phone.length - b.phone.length,
+      title: "Mã đơn hàng",
+      dataIndex: "key",
+      fixed: "left",
+      width: 250,
     },
     Table.EXPAND_COLUMN,
     {
-      title: "Tình trạng đơn hàng",
+      title: "Tên người mua",
+      dataIndex: "userName",
+      sorter: (a, b) => a.userName.localeCompare(b.userName),
+      fixed: "left",
+      width: 150,
+    },
+
+    {
+      title: "Tình trạng",
       dataIndex: "orderStatus",
-      sorter: (a, b) => a.orderStatus - b.orderStatus,
+      fixed: "left",
+      width: 150,
+      sorter: (a, b) => a.orderStatus.localeCompare(b.orderStatus),
       render: (text, record) => {
         const menuItems = [
           { label: "Đang giao hàng", key: "Shipped" },
@@ -70,7 +74,6 @@ const AdminOrder = () => {
           { label: "Đang xử lý", key: "Processing" },
           { label: "Đã hủy", key: "Cancelled" },
         ];
-
         const menu = (
           <Menu onClick={(e) => handleStatusChange(record._id, e.key)}>
             {menuItems.map((item) => (
@@ -78,22 +81,18 @@ const AdminOrder = () => {
             ))}
           </Menu>
         );
-
         return (
-          <Dropdown onSettled overlay={menu} trigger={["click"]}>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <Button onClick={(e) => e.preventDefault()}>
-                {text}
-              </Button>
-            </div>
+          <Dropdown overlay={menu} trigger={["click"]}>
+            <Button>{text}</Button>
           </Dropdown>
         );
       },
     },
-    
     {
       title: "Thanh toán",
       dataIndex: "isPaid",
+      fixed: "left",
+      width: 200,
       sorter: (a, b) => a.isPaid - b.isPaid,
       render: (text, record) => {
         const paidText = record.isPaid ? "Đã thanh toán" : "Chưa thanh toán";
@@ -120,57 +119,63 @@ const AdminOrder = () => {
         );
       },
     },
+
     {
-      title: "Tổng tiền đơn hàng ",
-      dataIndex: "totalPrice",
-      color: "red",
-      sorter: (a, b) => a.totalPrice - b.totalPrice,
-    },
-    {
-      title: "Tiền giao hàng",
+      title: "Phí giao hàng",
       dataIndex: "shippingPrice",
       sorter: (a, b) => a.shippingPrice - b.shippingPrice,
-    },
-    {
-      title: "Tỷ lệ giảm giá",
-      dataIndex: "discountPercentage",
-      width: 10,
-      sorter: (a, b) => a.discountPercentage - b.discountPercentage,
-    },
-    {
-      title: "Mã giảm giá",
-      dataIndex: "discountCode",
-      width: 50,
-      sorter: (a, b) => a.discountCode - b.discountCode,
+      width: 100,
     },
     {
       title: "Phương thức thanh toán",
       dataIndex: "paymentMethod",
-      width: 50,
-      sorter: (a, b) => a.paymentMethod - b.paymentMethod,
+      sorter: (a, b) => a.paymentMethod.localeCompare(b.paymentMethod),
+      width: 175,
     },
-    
-
+    // {
+    //   title: "Số điện thoại",
+    //   dataIndex: "phone",
+    //   sorter: (a, b) => a.phone.localeCompare(b.phone),
+    //   width: 150,
+    // },
     {
       title: "Địa chỉ",
       dataIndex: "address",
-      sorter: (a, b) => a.address - b.address,
+      sorter: (a, b) => a.address.localeCompare(b.address),
+      width: 150,
     },
     {
       title: "Thành phố",
       dataIndex: "city",
-      sorter: (a, b) => a.city - b.city,
+      sorter: (a, b) => a.city.localeCompare(b.city),
+      width: 150,
     },
     {
       title: "Ngày đặt",
       dataIndex: "createdAt",
-      sorter: (a, b) => a.createdAt - b.createdAt,
-    },    {
-      title: "Ngày cập nhật",
-      dataIndex: "updatedAt",
-      sorter: (a, b) => a.updatedAt - b.updatedAt,
+      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      width: 200,
+    },
+    {
+      title: "Tổng tiền đơn hàng",
+      dataIndex: "totalPrice",
+      fixed: "right",
+      sorter: (a, b) => {
+        // Loại bỏ các ký tự không phải số và chuyển chuỗi thành số
+        const totalPriceA = parseFloat(a.totalPrice.replace(/[^\d.-]/g, "")); // Loại bỏ VND
+        const totalPriceB = parseFloat(b.totalPrice.replace(/[^\d.-]/g, "")); // Loại bỏ VND
+
+        return totalPriceA - totalPriceB; // So sánh giá trị số
+      },
+      render: (text, record) => {
+        // Áp dụng màu nền dựa trên giá trị
+        const color = "red";
+        return <span style={{ color: color }}>{text}</span>;
+      },
+      width: 200,
     },
   ];
+
   useEffect(() => {
     console.log("Orders data: ", orders);
     if (orders?.data) {
@@ -187,8 +192,8 @@ const AdminOrder = () => {
         orderStatus: convertStatusOrder(order?.orderStatus),
         isPaid: order?.isPaid,
         discountPercentage: convertPercent(order?.discountPercentage),
-        createdAt: convertDateISO(order?.createdAt) ,
-        updatedAt: convertDateISO(order?.updatedAt) ,
+        createdAt: convertDateISO(order?.createdAt),
+        updatedAt: convertDateISO(order?.updatedAt),
       }));
       setDataTable(updatedDataTable); // Cập nhật trạng thái dataTable
     }
@@ -243,36 +248,111 @@ const AdminOrder = () => {
       }
     );
   };
+  const rowSelection = {
+    getCheckboxProps: () => ({
+      disabled,
+    }),
+  };
   return (
     <div>
       <WrapperHeader> Quản lý đơn hàng </WrapperHeader>
       <div style={{ height: 180, width: 200 }}>
         <PieChartComponent data={orders?.data} />
       </div>
-      <div style={{ marginTop: "30px" }}>
-      <TableComponent 
-      filename={"Order"}
-      headers={headers}
-      columns={columns}
-      isLoading={isLoadingOrders}
-      data={dataTable}
-      expandable={{
-    expandedRowRender: (record) => (
-      <div style={{ margin: 0 }}>
-        {record.orderItems.map((item, index) => (
-          <div key={index} style={{ marginBottom: '8px', padding: '4px', borderBottom: '1px solid #ddd',display: 'flex', gap: '10px' }}>
-            <Image src={item.image} alt={item.name} style={{ width: '50px', height: '50px', marginLeft: '8px', borderRadius: '3px' }} />
-            <p> {item.name} </p>
-            <p><strong>x{item.amount} </strong> </p>
-            <p>Giá: {item.price.toLocaleString()} VND</p>
-          </div>
-        ))}
-      </div>
-      
-    ),
-  }}
-/>
+      <div style={{ marginTop: "30px", maxWidth: "1300px" }}>
+        <TableComponent
+          title={() => (
+            <div
+              style={{
+                fontSize: "18px",
+                color: "rgb(77 164 210)",
+                fontWeight: "bold",
+              }}
+            >
+              Tổng số lượng đơn hàng: {orders?.data.length}
+            </div>
+          )}
+          filename={"Order"}
+          headers={headers}
+          columns={columns}
+          isLoading={isLoadingOrders}
+          data={dataTable}
+          rowSelected={""}
+          expandable={{
+            expandedRowRender: (record) => (
+              <div>
+                {/* Hiển thị các thông tin khác như địa chỉ, thành phố, mã giảm giá, tỷ lệ giảm giá */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "20px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <div style={{ flex: "1", minWidth: "250px" }}>
+                    <span style={{ color: "#1e85bc" }}>
+                      Địa chỉ người nhận:{" "}
+                    </span>
+                    {record.address}, {record.city}
+                  </div>
+                  <div style={{ flex: "1", minWidth: "250px" }}>
+                    <span style={{ color: "#1e85bc" }}>
+                      Số điện thoại người nhận:{" "}
+                    </span>
+                    {record.phone}
+                  </div>
+                  <div style={{ flex: "1", minWidth: "250px" }}>
+                    <span style={{ color: "#1e85bc" }}>
+                      Mã đã áp dụng giảm giá:{" "}
+                    </span>
+                    {record.discountCode || "Không có mã giảm giá"}
+                  </div>
+                  <div style={{ flex: "1", minWidth: "250px" }}>
+                    <span style={{ color: "#1e85bc" }}>Tỷ lệ giảm giá: </span>
+                    {record.discountPercentage
+                      ? `${record.discountPercentage}`
+                      : "Không có giảm giá"}
+                  </div>
+                </div>
 
+                {/* Hiển thị thông tin các sản phẩm trong order */}
+                {record.orderItems.map((item, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      marginBottom: "3px",
+                      padding: "2px",
+                      borderBottom: "1px solid #ddd",
+                      display: "flex",
+                      gap: "10px",
+                    }}
+                  >
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      style={{
+                        width: "50px",
+                        height: "50px",
+                        marginLeft: "8px",
+                        borderRadius: "3px",
+                      }}
+                    />
+                    <p>{item.name}</p>
+                    <p>
+                      <strong>x{item.amount}</strong>
+                    </p>
+                    <p>Giá: {item.price.toLocaleString()} VND</p>
+                  </div>
+                ))}
+              </div>
+            ),
+          }}
+          scroll={{
+            x: 1000,
+            y: 450, // Đảm bảo cuộn dọc có đủ không gian
+          }}
+        />
       </div>
     </div>
   );

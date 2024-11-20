@@ -6,9 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 import * as OrderService from "../../services/OrderServices";
 import { orderContant } from "../../contant";
 import { useMutationHooks } from "../../hooks/useMutationHook";
-import { Dropdown, Flex, Menu } from "antd";
+import { Card, Dropdown, Flex, Menu } from "antd";
 import BarChartComponent from "./BarChartComponent";
 import { convertPrice, convertPriceDataChart } from "../../utils";
+import InfoCard from "../InfoCard/InfoCard";
 
 const AdminOrder = () => {
   const [rowSelected, setRowSelected] = useState("");
@@ -38,41 +39,70 @@ const AdminOrder = () => {
   const { isPending: isLoadingMonthly, data: dataMonthly } =
     queryMonthlyRevenue;
 
-    const chartData = Array.from({ length: 12 }, (_, index) => {
-      const month = index + 1;
-    
-      // Kiểm tra nếu dataMonthly tồn tại và có dữ liệu
-      const item = dataMonthly && dataMonthly.length > 0
+  const chartData = Array.from({ length: 12 }, (_, index) => {
+    const month = index + 1;
+
+    // Kiểm tra nếu dataMonthly tồn tại và có dữ liệu
+    const item =
+      dataMonthly && dataMonthly.length > 0
         ? dataMonthly.find((item) => item._id.month === month)
         : null;
-    
-      return {
-        name: `Tháng ${month}`,                    // Tên tháng
-        doanhthu: item ? item.monthlyRevenue : 0,   // Doanh thu hoặc 0 nếu không có
-        pv: 0,                                      // Giá trị mặc định
-        amt: 0,                                     // Giá trị mặc định
-      };
-    });
-    
-    
+
+    return {
+      name: `Tháng ${month}`, // Tên tháng
+      doanhthu: item ? item.monthlyRevenue : 0, // Doanh thu hoặc 0 nếu không có
+      pv: 0, // Giá trị mặc định
+      amt: 0, // Giá trị mặc định
+    };
+  });
+
+  // Lấy doanh thu tháng này từ dataMonthly
+  const currentMonthRevenue = () => {
+    if (dataMonthly && dataMonthly.length > 0) {
+      const currentMonth = new Date().getMonth() + 1; // Lấy tháng hiện tại (1 - 12)
+      const currentMonthData = dataMonthly.find(
+        (item) => item._id.month === currentMonth
+      );
+      return currentMonthData ? currentMonthData.monthlyRevenue : 0;
+    }
+    return 0;
+  };
+
   return (
-    <div>
-      <WrapperHeader> Quản lý doanh thu </WrapperHeader>
-      <div style={{ height: 100, width: 1000 }}>
-        <div style={{ fontSize: "25px", fontWeight: 500 }}>
-          TỔNG DOANH THU:
-          <span style={{ color: "red" }}>
-            {" "}
-            {convertPrice(dataTotal?.totalRevenue)}
-          </span>
+    <div style={{ padding: "20px" }}>
+      {/* Tiêu đề */}
+      <WrapperHeader>Quản lý doanh thu</WrapperHeader>
+
+      {/* 3 InfoCards trong 1 hàng */}
+      <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
+        <InfoCard
+          text="Tổng doanh thu"
+          value={dataTotal?.totalRevenue}
+          color="#008bd4"
+        />
+        <InfoCard
+          text="Doanh thu tháng này"
+          value={currentMonthRevenue()}
+          color="#008bd4"
+        />
+        {/* <InfoCard text="Lợi nhuận" value={dataTotal?.profit} /> */}
+      </div>
+
+      <Card
+        title="Doanh thu theo tháng"
+        bordered={false}
+        style={{
+          marginTop: "30px",
+          borderRadius: "10px",
+          boxShadow: "0 4px 5px rgba(0, 0, 0, 0.1)",
+          padding: "20px",
+          backgroundColor: "#ffffff",
+        }}
+      >
+        <div style={{ marginTop: "10px" }}>
+          <BarChartComponent data={chartData} />
         </div>
-      </div>
-      <div style={{ marginTop: "10px", display: "flex" }}>
-        <span style={{ fontSize: "25px", fontWeight: 500 }}>
-          Doanh thu theo tháng: 
-        </span>
-        <BarChartComponent data={chartData} />
-      </div>
+      </Card>
     </div>
   );
 };

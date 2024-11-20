@@ -30,6 +30,7 @@ import { useQuery } from "@tanstack/react-query";
 import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import { useSelector } from "react-redux";
 import ModalComponent from "../ModalComponent/ModalComponent";
+import InfoCard from "../InfoCard/InfoCard";
 
 const AdminProduct = () => {
   const [isSpecEnabled, setIsSpecEnabled] = useState(false);
@@ -126,6 +127,7 @@ const AdminProduct = () => {
 
   const getAllProduct = async () => {
     const res = await ProductService.getAllProduct("", 1000);
+    console.log(res);
     return res;
   };
 
@@ -378,9 +380,12 @@ const AdminProduct = () => {
     fetchDetailsProduct(rowSelected);
   };
   const headers = [
+    { label: "Id products", key: "key" },
     { label: "Name products", key: "name" },
     { label: "Price", key: "price" },
     { label: "Type", key: "type" },
+    { label: "countInStock", key: "countInStock" },
+    { label: "selled", key: "selled" },
   ];
 
   const renderAction = () => {
@@ -512,6 +517,11 @@ const AdminProduct = () => {
 
   const columns = [
     {
+      title: "Mã sản phẩm",
+      dataIndex: "key",
+      ...getColumnSearchProps("key"),
+    },
+    {
       title: "Tên sản phẩm",
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
@@ -521,11 +531,27 @@ const AdminProduct = () => {
       title: "Giá",
       dataIndex: "price",
       sorter: (a, b) => parseFloat(a.price) - parseFloat(b.price),
+      render: (text, record) => {
+        const color = "red";
+        return <span style={{ color: color }}>{text}</span>;
+      },
     },
     {
       title: "Thể loại",
       dataIndex: "type",
       ...getColumnSearchProps("type"),
+    },
+    {
+      title: "Tồn kho",
+      dataIndex: "countInStock",
+      sorter: (a, b) => a.countInStock - b.countInStock, // So sánh theo số
+      width: 100,
+    },
+    {
+      title: "Đã bán",
+      dataIndex: "selled",
+      sorter: (a, b) => a.selled - b.selled, // So sánh theo số
+      width: 100,
     },
     {
       title: "Hành động",
@@ -569,6 +595,17 @@ const AdminProduct = () => {
       </div>
       <div style={{ marginTop: "20px" }}>
         <TableComponent
+          title={() => (
+            <div
+              style={{
+                fontSize: "18px",
+                color: "rgb(77 164 210)",
+                fontWeight: "bold",
+              }}
+            >
+              Tổng số lượng sản phẩm: {products?.data.length}
+            </div>
+          )}
           filename={"Products"}
           headers={headers}
           columns={columns}

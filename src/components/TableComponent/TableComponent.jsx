@@ -5,7 +5,7 @@ import { CSVLink } from "react-csv";
 
 const TableComponent = (props) => {
   const {
-    selectionType = "checkbox",
+    selectionType = "none",
     data = [],
     isLoading = false,
     columns = [],
@@ -13,11 +13,15 @@ const TableComponent = (props) => {
     filename = "EXEL",
   } = props;
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRows}`);
-    },
-  };
+  const rowSelection =
+    selectionType !== "none"
+      ? {
+          type: selectionType,
+          onChange: (selectedRowKeys, selectedRows) => {
+            console.log(`selectedRowKeys: ${selectedRows}`);
+          },
+        }
+      : undefined;
 
   return (
     <Loading isPending={isLoading}>
@@ -35,7 +39,7 @@ const TableComponent = (props) => {
         </Button>
       </div> */}
       <Table
-        rowSelection={{ type: selectionType, ...rowSelection }}
+        rowSelection={rowSelection} // rowSelection bị loại bỏ nếu selectionType là "none"
         columns={columns}
         dataSource={data}
         {...props}

@@ -19,6 +19,7 @@ export const getOrderOfUser = async (id,access_token) => {
             token: `Bearer ${access_token}`,
         },
     });
+    console.log("id",id)
     return res.data
 }
 export const cancelOrder = async (id,access_token) => { 

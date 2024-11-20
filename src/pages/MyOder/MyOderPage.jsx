@@ -49,6 +49,7 @@ const MyOrderPage = () => {
     const res = await OrderService.getOrderOfUser(user?.id, user?.access_token);
     return res;
   };
+  console.log("user?.id", user?.id);
 
   const exportToExcel = (data) => {
     // Format data as an array of headers and values in one row
@@ -121,7 +122,7 @@ const MyOrderPage = () => {
     data: dataCancel,
     isPending: isLoadingCancel,
     isSuccess: isSuccessCancel,
-    isError: isErrorCancel
+    isError: isErrorCancel,
   } = mutationCancel;
   const {
     data: dataDetails,
@@ -130,7 +131,7 @@ const MyOrderPage = () => {
   } = mutationDetails;
 
   useEffect(() => {
-    if ( dataCancel?.status === "OK") {
+    if (dataCancel?.status === "OK") {
       message.success(dataCancel?.message);
     } else if (dataCancel?.status === "ERR") {
       message.error(dataCancel?.message);
@@ -183,11 +184,7 @@ const MyOrderPage = () => {
         {orders && orders.data && orders.data.length > 0 ? (
           <>
             {orders?.data.map((order) => (
-              <OrderCard
-                hoverable
-                key={order.id}
-                bordered={false}
-              >
+              <OrderCard hoverable key={order.id} bordered={false}>
                 <Row gutter={[16, 16]}>
                   <Col span={16}>
                     <div>
@@ -283,12 +280,12 @@ const MyOrderPage = () => {
                     </Typography.Text>
 
                     <div style={{ marginTop: "10px" }}>
-                    <Button
-  style={{ marginRight: "10px" }}
-  onClick={() => openCancelModal(order._id)}
->
-  Hủy đơn hàng
-</Button>
+                      <Button
+                        style={{ marginRight: "10px" }}
+                        onClick={() => openCancelModal(order._id)}
+                      >
+                        Hủy đơn hàng
+                      </Button>
                       <Button
                         onClick={() => openDetailModal(order._id)}
                         type="primary"

@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import AdminDiscount from "../../components/AdminDiscount/AdminDiscount";
 
 
+
 export const themeConstant = {
   light: {
     background: "#ffffff",
@@ -154,6 +155,7 @@ const AdminPage = () => {
         {renderPage(key)}
       </div>
     </div>
+    
   );
 };
 

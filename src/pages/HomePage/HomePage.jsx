@@ -45,10 +45,10 @@ const HomePage = () => {
       >
         <div
           id="container"
-          style={{ backgroundColor: "#efefef", padding: "0 120px" }}
+          style={{ backgroundColor: "#efefef", padding: "0 120px"}}
         ></div>
         <div data-aos="fade-up">
-          <SliderComponent arrImages={[slider1, slider3]} />
+          <SliderComponent arrImages={[slider1, slider3]}/>
         </div>
         <div
           data-aos="fade-up"

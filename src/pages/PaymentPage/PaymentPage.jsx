@@ -26,6 +26,7 @@ import {
 } from "../../redux/slices/orderSlide";
 import * as DiscountService from "../../services/DiscountServices";
 import * as PaymentServices from "../../services/PaymentServices";
+import Footer from "../../components/Footer/Footer";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 const PaymentPage = () => {
@@ -302,7 +303,7 @@ const PaymentPage = () => {
   }, [clientId]);
   return (
     <Loading isPending={isLoadingAddOrder}>
-      <div style={{ background: "#f5f5fa", width: "100%", height: "100vh", marginTop: "-20px"  }}>
+      <div style={{ background: "#f5f5fa", width: "100%", height: "100vh" }}>
         <div style={{ height: "100%", width: "1270px", margin: "0 auto", paddingTop:"10px" }}>
           <h3 style={{paddingLeft:"10px"}}>THANH TOÁN</h3>
           <div style={{ display: "flex", justifyContent: "center" }}>
@@ -522,6 +523,7 @@ const PaymentPage = () => {
             </WrapperRight>
           </div>
         </div>
+        <Footer/>
       </div>
     </Loading>
   );

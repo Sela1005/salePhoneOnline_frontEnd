@@ -1,7 +1,8 @@
 import React from "react";
 import ProductDetailsComponent from "../../components/ProductDetailsComponent/ProductDetailsComponent";
 import { useNavigate, useParams } from "react-router-dom";
-
+import ProductDetailSpecificationsComponent from "../../components/ProductDetailSpecificationsComponent/ProductDetailSpecificationsComponent";
+import Footer from "../../components/Footer/Footer";
 const ProductDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -34,6 +35,10 @@ const ProductDetailsPage = () => {
           <ProductDetailsComponent idProduct={id} />
         </div>
       </div>
+      <div style={{background:"#ffffff", marginTop:"20px"}}>
+      <Footer/>
+      </div>
+      
     </div>
   );
 };

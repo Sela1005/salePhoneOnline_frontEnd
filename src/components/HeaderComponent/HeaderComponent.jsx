@@ -13,6 +13,11 @@ import {
   UserOutlined,
   ShoppingCartOutlined,
   CaretDownOutlined,
+  HomeOutlined,
+  MobileOutlined,
+  ContactsOutlined,
+  IdcardOutlined,
+  InboxOutlined,
 } from "@ant-design/icons";
 import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import { useNavigate } from "react-router-dom";
@@ -174,7 +179,7 @@ const HeaderComponent = () => {
                     >
                       Quản lý hệ thống
                     </WrapperContentPopup>
-                  )}
+                  )}  
                   <WrapperContentPopup
                     onClick={() => navigate("/profile-user")}
                   >
@@ -241,54 +246,118 @@ const HeaderComponent = () => {
 
       {/* Menu chính */}
       <div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    background: "#ffffff",
+    padding: "10px 0",
+    position: "relative",
+    fontSize: "15px",
+    fontWeight: "bold",
+  }}
+>
+  <div
+    style={{
+      padding: "0 15px",
+      color: "#000000",
+      cursor: "pointer",
+      fontSize: "18px",
+      display: "flex",
+    }}
+    onClick={() => navigate("/")}
+    onMouseEnter={(e) => (e.currentTarget.style.color = "#0066cc")}
+    onMouseLeave={(e) => (e.currentTarget.style.color = "#000000")}
+  >
+    <div
+      style={{
+        padding: "0",
+        marginRight: "5px",
+      }}
+    >
+      <HomeOutlined />
+    </div>
+    Trang chủ
+  </div>
+
+  <Popover
+    style={{
+      width: "100%",
+    }}
+    content={hoverContent}
+    trigger="hover"
+    open={hovered}
+    onOpenChange={handleHoverChange}
+    placement="bottom"
+  >
+    <div
+      style={{
+        padding: "0 15px",
+        cursor: "pointer",
+        position: "relative",
+        fontSize: "18px",
+        display: "flex",
+        color: "#000000",
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.color = "#0066cc")}
+      onMouseLeave={(e) => (e.currentTarget.style.color = "#000000")}
+    >
+      <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          background: "#008bd4",
-          padding: "10px 0",
-          position: "relative",
+          padding: "0 10px",
         }}
       >
-        <div
-          style={{ padding: "0 15px", color: "#fff", cursor: "pointer" }}
-          onClick={() => navigate("/")}
-        >
-          Trang chủ
-        </div>
-        <Popover
-          style={{
-            width: "100%",
-          }}
-          content={hoverContent}
-          trigger="hover"
-          open={hovered}
-          onOpenChange={handleHoverChange}
-          placement="bottom"
-        >
-          <div
-            style={{
-              padding: "0 15px",
-              color: "#fff",
-              cursor: "pointer",
-              position: "relative",
-            }}
-          >
-            Điện thoại
-          </div>
-        </Popover>
-        <div
-          style={{ padding: "0 15px", color: "#fff", cursor: "pointer" }}
-          onClick={() => navigate("/contact")}
-        >
-          Liên hệ
-        </div>
-        <div
-          style={{ padding: "0 15px", color: "#fff", cursor: "pointer" }}
-          onClick={() => navigate("/about")}
-        >
-          Giới thiệu
-        </div>
+        <MobileOutlined />
       </div>
+      Điện thoại
+    </div>
+  </Popover>
+
+  <div
+    style={{
+      padding: "0 15px",
+      color: "#000000",
+      cursor: "pointer",
+      fontSize: "18px",
+      display: "flex",
+    }}
+    onClick={() => navigate("/contact")}
+    onMouseEnter={(e) => (e.currentTarget.style.color = "#0066cc")}
+    onMouseLeave={(e) => (e.currentTarget.style.color = "#000000")}
+  >
+    <div
+      style={{
+        padding: "0",
+        marginRight: "5px",
+      }}
+    >
+      <InboxOutlined />
+    </div>
+    Liên hệ
+  </div>
+
+  <div
+    style={{
+      padding: "0 15px",
+      color: "#000000",
+      cursor: "pointer",
+      fontSize: "18px",
+      display: "flex",
+    }}
+    onClick={() => navigate("/about")}
+    onMouseEnter={(e) => (e.currentTarget.style.color = "#0066cc")}
+    onMouseLeave={(e) => (e.currentTarget.style.color = "#000000")}
+  >
+    <div
+      style={{
+        marginRight: "5px",
+      }}
+    >
+      <IdcardOutlined />
+    </div>
+    Giới thiệu
+  </div>
+</div>
+
     </div>
   );
 };

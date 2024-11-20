@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import * as ProductService from "../../services/ProductServices";
 import CardComponent from "../../components/CardComponent/CardComponent";
 import Loading from "../../components/LoadingComponent/Loading";
-
+import Footer from "../../components/Footer/Footer";
 const ProductsPage = () => {
   const searchProduct = useSelector((state) => state?.product?.search);
   const [loading, setLoading] = useState(false);
@@ -91,6 +91,7 @@ const ProductsPage = () => {
             );
           })}
         </WapperProduct>
+        <Footer/>
       </Loading>
     </MainContainer>
   );

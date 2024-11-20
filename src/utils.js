@@ -27,7 +27,7 @@ export const renderOption = (arr) => {
         })
     }
     results.push({
-        label: 'Thêm type',
+        label: 'Thêm hãng mới',
         value: 'add_type'
     })
     return results

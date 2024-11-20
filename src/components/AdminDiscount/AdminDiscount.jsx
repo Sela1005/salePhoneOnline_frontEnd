@@ -547,14 +547,14 @@ const AdminDiscount = () => {
     <Form
       name="basic"
       labelCol={{
-        span: 6, // Điều chỉnh labelCol cho đồng nhất với form trước
+        span: 6,
       }}
       wrapperCol={{
         span: 18,
       }}
       style={{
         maxWidth: 600,
-        paddingTop: '20px',  // Thêm khoảng cách phía trên form
+        paddingTop: '20px',
       }}
       onFinish={onUpdateDiscount}
       autoComplete="off"

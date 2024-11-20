@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { WrapperTypeProduct } from "./style";
 
 const TypeProduct = ({ name }) => {
   const navigate = useNavigate();
@@ -15,12 +16,12 @@ const TypeProduct = ({ name }) => {
   };
 
   return (
-    <div
-      style={{ padding: "5px 10px", cursor: "pointer" }}
+    <WrapperTypeProduct
+      style={{ padding: "6px 0", cursor: "pointer" }}
       onClick={() => handleNavigateType(name)}
     >
       {name}
-    </div>
+    </WrapperTypeProduct>
   );
 };
 export default TypeProduct;

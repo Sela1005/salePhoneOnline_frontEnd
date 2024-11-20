@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Badge, Col, Flex, Popover } from "antd";
+import { Badge, Button, Col, Flex, Popover } from "antd";
 import {
   WrapperHeader,
   WrapperTextHeader,
@@ -7,6 +7,7 @@ import {
   WrapperAccountHeader,
   WrapperContentPopup,
   ProductTypeItem,
+  WrapperSortPrice,
 } from "./style";
 import {
   UserOutlined,
@@ -54,13 +55,89 @@ const HeaderComponent = () => {
   useEffect(() => {
     fetchAllTypeProduct();
   }, []);
+  const handlePriceFilter = (min, max) => {
+    if (min === null) {
+      // Trên 20 triệu
+      navigate(`/productPrice/0/2000000`);
+    } else if (max === null) {
+      // Dưới 2 triệu
+      navigate(`/productPrice/20000000/Infinity`);
+    } else {
+      navigate(`/productPrice/${min}/${max}`);
+    }
+  };
 
+  const [hovered, setHovered] = useState(false);
+  const handleHoverChange = (open) => {
+    setHovered(open);
+  };
+  const hoverContent = (
+    <div style={{ display: "flex", gap: "120x", width: "35rem" }}>
+      <div style={{ padding: "10px" }}>
+        <strong>Hãng Điện Thoại</strong>
+        {typeProducts.map((item) => (
+          <div key={item}>
+            <TypeProduct name={item} />
+          </div>
+        ))}
+      </div>
+      <div style={{ padding: "10px" }}>
+        <strong>Mức Giá Điện Thoại</strong>
+        <WrapperSortPrice onClick={() => handlePriceFilter(null, 2000000)}>
+          Dưới 2 triệu
+        </WrapperSortPrice>
+        <WrapperSortPrice onClick={() => handlePriceFilter(200000, 5000000)}>
+          Từ 2 triệu đến 5 triệu
+        </WrapperSortPrice>
+        <WrapperSortPrice onClick={() => handlePriceFilter(5000000, 10000000)}>
+          Từ 5 triệu đến 10 triệu
+        </WrapperSortPrice>
+        <WrapperSortPrice onClick={() => handlePriceFilter(10000000, 20000000)}>
+          Từ 10 triệu đến 20 triệu
+        </WrapperSortPrice>
+        <WrapperSortPrice onClick={() => handlePriceFilter(20000000, null)}>
+          Trên 20 triệu
+        </WrapperSortPrice>
+      </div>
+
+      <div style={{ padding: "10px" }}>
+        <strong>Điện thoại hot</strong>
+        <WrapperSortPrice
+          onClick={() => navigate("/product-details/67341c25b4e68abf4633a4f2")}
+        >
+          Samsung Galaxy S24 Ultra
+        </WrapperSortPrice>
+        <WrapperSortPrice
+          onClick={() => navigate("/product-details/6734192c494d02e6fab57ed2")}
+        >
+          iPhone 15 Plus
+        </WrapperSortPrice>
+
+        <WrapperSortPrice
+          onClick={() => navigate("/product-details/67341d6db4e68abf4633a539")}
+        >
+          {" "}
+          Samsung Galaxy Z Flip6
+        </WrapperSortPrice>
+        <WrapperSortPrice
+          onClick={() => navigate("/product-details/673bdb48557631031f370fe9")}
+        >
+          {" "}
+          iPhone 16 Pro Max
+        </WrapperSortPrice>
+      </div>
+    </div>
+  );
   return (
     <div>
       <WrapperHeader>
         <Col span={4}>
           <WrapperTextHeader onClick={() => navigate("/")}>
-            <img src={logo} alt="logo" style={{ height: "70px", paddingTop: "5px" }} />
+            <img
+              src={logo}
+              alt="logo"
+              style={{ height: "70px", paddingTop: "5px" }}
+            />
           </WrapperTextHeader>
         </Col>
 
@@ -97,21 +174,27 @@ const HeaderComponent = () => {
               user?.access_token ? (
                 <div>
                   {user?.isAdmin && (
-                    <WrapperContentPopup onClick={() => navigate("/system/admin")}>
+                    <WrapperContentPopup
+                      onClick={() => navigate("/system/admin")}
+                    >
                       Quản lý hệ thống
                     </WrapperContentPopup>
                   )}
-                  <WrapperContentPopup onClick={() => navigate("/profile-user")}>
+                  <WrapperContentPopup
+                    onClick={() => navigate("/profile-user")}
+                  >
                     Thông tin người dùng
                   </WrapperContentPopup>
                   <WrapperContentPopup onClick={() => navigate("/myorder")}>
                     Lịch sử mua hàng
                   </WrapperContentPopup>
-                  <WrapperContentPopup onClick={async () => {
-                    await UserService.logoutUser();
-                    dispatch(resetUser());
-                    navigate("/");
-                  }}>
+                  <WrapperContentPopup
+                    onClick={async () => {
+                      await UserService.logoutUser();
+                      dispatch(resetUser());
+                      navigate("/");
+                    }}
+                  >
                     Đăng xuất
                   </WrapperContentPopup>
                 </div>
@@ -187,46 +270,27 @@ const HeaderComponent = () => {
         <div style={{ padding: "0 10px", color: "#fff", cursor: "pointer", fontSize:"18px" }}>
         <MobileOutlined />
         </div>
-        <div
+        <Popover
           style={{
-            padding: "0 15px",
-            color: "#fff",
-            cursor: "pointer",
-            position: "relative",
-             fontSize:"18px"
+            width: "100%",
           }}
-          onMouseOver={() => setShowPopup(true)}
-          onMouseOut={() => setTimeout(() => setShowPopup(false), 300)}
+          content={hoverContent}
+          trigger="hover"
+          open={hovered}
+          onOpenChange={handleHoverChange}
+          placement="bottom"
         >
-         
-          Điện thoại
-          {showPopup && typeProducts?.length > 0 && (
-            <div
-              style={{
-                position: "absolute",
-                top: "100%",
-                backgroundColor: "#fff",
-                padding: "10px",
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-                zIndex: 10,
-                maxHeight: "300px",
-                overflowY: "auto",
-              }}
-            >
-              {typeProducts.map((item) => (
-                <ProductTypeItem key={item.id}>
-                  <TypeProduct name={item.name} />
-                </ProductTypeItem>
-              ))}
-            </div>
-          )}
-        </div>
-       </div>
-
-       <div style={{display:"Flex"}}>
-       <div style={{color: "#fff", cursor: "pointer", fontSize:"18px", paddingLeft:"30px" }}>
-       <InboxOutlined />
-        </div>
+          <div
+            style={{
+              padding: "0 15px",
+              color: "#fff",
+              cursor: "pointer",
+              position: "relative",
+            }}
+          >
+            Điện thoại
+          </div>
+        </Popover>
         <div
           style={{ padding: "0 15px", color: "#fff", cursor: "pointer", fontSize:"18px" }}
           onClick={() => navigate("/contact")}

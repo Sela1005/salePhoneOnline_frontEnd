@@ -21,10 +21,15 @@ const RecommendedForYouPage = () => {
   const fetchRecommendedProducts = async (context) => {
     const limit = context?.queryKey && context?.queryKey[1];
     const search = context?.queryKey && context?.queryKey[2];
-    const sort = "asc"; // Cách sắp xếp cho các sản phẩm gợi ý (có thể tuỳ chỉnh)
-    const recommended = true; // Thêm điều kiện lấy sản phẩm được gợi ý
+    const sort = "asc"; // Chuyển đổi giá trị sắp xếp
+    const selled = true;
 
-    const res = await ProductService.getAllProduct(search, limit, sort, recommended);
+    const res = await ProductService.getAllProductSortSelled(
+      search,
+      limit,
+      sort,
+      selled
+    );
     return res;
   };
 
@@ -53,7 +58,7 @@ const RecommendedForYouPage = () => {
         </OutstandingTitle>
         <WapperProduct style={{ padding: "0px 5px" }}>
           <Loading isPending={isLoading || loading}>
-            <WapperProduct >
+            <WapperProduct>
               {products?.data?.map((product) => {
                 return (
                   <CardComponent
@@ -73,8 +78,6 @@ const RecommendedForYouPage = () => {
             </WapperProduct>
           </Loading>
         </WapperProduct>
-       
-     
       </MainContainer>
     </div>
   );

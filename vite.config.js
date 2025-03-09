@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5085,
     proxy: {
       '/api': {
-        target: 'https://backend-salephone.onrender.com', // Địa chỉ backend
+        target: 'https://furious-ariadne-sela-3eda5330.koyeb.app', // Địa chỉ backend
         changeOrigin: true,
         secure: true
       },

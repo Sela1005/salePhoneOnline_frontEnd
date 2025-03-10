@@ -119,6 +119,8 @@ const AdminUser = ({ theme, setTheme }) => {
       {
         onSettled: () => {
           queryUser.refetch();
+          setRowSelected(null); // thêm dòng này
+          setStateUserDetails({}); // thêm dòng này
         },
       }
     );
@@ -375,6 +377,8 @@ const AdminUser = ({ theme, setTheme }) => {
       {
         onSettled: () => {
           queryUser.refetch();
+          setRowSelected(null); // thêm dòng này
+          setStateUserDetails({}); // thêm dòng này
         },
       }
     );

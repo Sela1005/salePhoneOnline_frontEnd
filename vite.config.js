@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5085,
     proxy: {
       '/api': {
-        target: 'https://salephoneonlinebackend-production.up.railway.app', // Địa chỉ backend
+        target: 'http://localhost:5082', // Địa chỉ backend
         changeOrigin: true,
         secure: true
       },

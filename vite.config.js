@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5085,
     proxy: {
       '/api': {
-        target: 'http://14.225.218.234:5082', // Địa chỉ backend
+        target: import.meta.env.VITE_SERVER_HOST_CONF, // Địa chỉ backend
         changeOrigin: true,
         secure: true
       },

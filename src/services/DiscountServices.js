@@ -9,15 +9,44 @@ export const createDiscount = async (data,access_token) => {
     });
     return res.data
 }
-export const useDiscount = async (code,access_token) => { 
-    const res = await axiosJWT.post(`${import.meta.env.VITE_SERVER_HOST}/discount/use/${code}`,{
-        headers: {
-            token: `Bearer ${access_token}`,
-        },
-    })
-    return res.data
-}
+export const useDiscount = async (code, totalAmount, access_token) => { 
+    const res = await axiosJWT.post(
+        `${import.meta.env.VITE_SERVER_HOST}/discount/use/${code}`,
+        { totalAmount },
+        {
+            headers: {
+                token: `Bearer ${access_token}`,
+            },
+        }
+    );
+    return res.data;
+};
 
+export const undoDiscount = async (access_token) => {
+    const res = await axiosJWT.post(
+        `${import.meta.env.VITE_SERVER_HOST}/discount/undo`,
+        {},
+        {
+            headers: {
+                token: `Bearer ${access_token}`,
+            },
+        }
+    );
+    return res.data;
+};
+
+export const redoDiscount = async (access_token) => {
+    const res = await axiosJWT.post(
+        `${import.meta.env.VITE_SERVER_HOST}/discount/redo`,
+        {},
+        {
+            headers: {
+                token: `Bearer ${access_token}`,
+            },
+        }
+    );
+    return res.data;
+};
 
 export const getAllDiscount = async () => { 
     const res = await axios.get(`${import.meta.env.VITE_SERVER_HOST}/discount/get-all`);

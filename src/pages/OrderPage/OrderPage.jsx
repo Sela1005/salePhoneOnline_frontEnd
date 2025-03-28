@@ -106,21 +106,83 @@ const OderPage = () => {
 
   const handleCheckDiscount = async () => {
     try {
-      const CheckDiscount = await DiscountService.getDetailDiscount(
-        checkDiscountCode
+      if (DiscountAffterApply) {
+        message.warning(
+          "Bạn đã áp dụng mã giảm giá. Hãy hoàn tác trước khi áp dụng mã mới!"
+        );
+        return;
+      }
+
+      const totalAmount = priceMemo; // Tổng tiền trước khi giảm giá
+      const access_token = user?.access_token; // Lấy access_token từ Redux store
+
+      const response = await DiscountService.useDiscount(
+        checkDiscountCode,
+        totalAmount,
+        access_token
       );
-      if (CheckDiscount.status === "OK") {
-        setDiscountAffterApply(CheckDiscount.data.discountPercentage);
-        dispatch(setDiscount(CheckDiscount.data.code)); // Cập nhật discount
-        dispatch(setDiscountPercentage(CheckDiscount.data.discountPercentage)); // Cập nhật discountPercentage
-        message.success(CheckDiscount?.message);
+      if (response.status === "OK") {
+        setDiscountAffterApply(response.discountCode.discountPercentage);
+        dispatch(setDiscount(response.discountCode.code)); // Cập nhật mã giảm giá
+        dispatch(
+          setDiscountPercentage(response.discountCode.discountPercentage)
+        ); // Cập nhật phần trăm giảm giá
+        message.success(response.message);
       } else {
-        message.error(CheckDiscount?.message);
+        message.error(response.message);
       }
     } catch (error) {
-      message.error("Đã xảy ra lỗi khi áp dụng mã giảm giá! Lỗi: ", error);
+      message.error("Đã xảy ra lỗi khi áp dụng mã giảm giá!");
     }
   };
+  const handleUndoDiscount = async () => {
+    try {
+      const access_token = user?.access_token; // Lấy access_token từ Redux store
+      const response = await DiscountService.undoDiscount(access_token);
+      if (response.status === "OK") {
+        setDiscountAffterApply(""); // Xóa trạng thái giảm giá
+        dispatch(setDiscount(null)); // Xóa mã giảm giá trong Redux
+        dispatch(setDiscountPercentage(0)); // Xóa phần trăm giảm giá trong Redux
+        message.success(response.message);
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error("Đã xảy ra lỗi khi thực hiện Undo!");
+    }
+  };
+  const handleRedoDiscount = async () => {
+    try {
+      const access_token = user?.access_token; // Lấy access_token từ Redux store
+      const response = await DiscountService.redoDiscount(access_token);
+      if (response.status === "OK") {
+        setDiscountAffterApply(response.discountCode.discountPercentage); // Khôi phục trạng thái giảm giá
+        dispatch(setDiscount(response.discountCode.code)); // Khôi phục mã giảm giá trong Redux
+        dispatch(
+          setDiscountPercentage(response.discountCode.discountPercentage)
+        ); // Khôi phục phần trăm giảm giá trong Redux
+        message.success(response.message);
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error("Đã xảy ra lỗi khi thực hiện Redo!");
+    }
+  };
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.key === "z") {
+        handleUndoDiscount();
+      } else if (e.ctrlKey && e.key === "y") {
+        handleRedoDiscount();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   const priceMemo = useMemo(() => {
     const result = order?.orderItemSelected?.reduce((total, cur) => {
@@ -597,6 +659,23 @@ const OderPage = () => {
                 <span>Mã ưu đãi</span>
               </div>
               <a onClick={showModal}>Nhập mã giảm giá</a>
+            </div>
+            <div style={{ marginTop: "20px" }}>
+              <Button
+                onClick={handleUndoDiscount}
+                type="default"
+                disabled={!DiscountAffterApply}
+              >
+                Hoàn tác (Ctrl + Z)
+              </Button>
+              <Button
+                onClick={handleRedoDiscount}
+                type="default"
+                style={{ marginLeft: "10px" }}
+                disabled={!!DiscountAffterApply}
+              >
+                Làm lại (Ctrl + Y)
+              </Button>
             </div>
             <Modal
               title="Chọn Mã ưu đãi"

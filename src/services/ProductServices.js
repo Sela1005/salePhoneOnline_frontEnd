@@ -30,6 +30,8 @@ export const getAllProduct = async (search, limit, sort, selled) => {
 };
 
 
+
+
 export const getAllProductSortSelled = async (search,limit,sort, selled) => { 
     let res = {}
     if(search?.length > 0){

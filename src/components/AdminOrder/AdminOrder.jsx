@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+// src/components/AdminOrder.jsx
+import React, { useEffect, useState } from "react";
 import { WrapperHeader } from "./style";
 import TableComponent from "../TableComponent/TableComponent";
 import { useSelector } from "react-redux";
@@ -6,7 +7,6 @@ import { useQuery } from "@tanstack/react-query";
 import {
   convertPrice,
   convertStatusOrder,
-  convertPaidOrder,
   convertPercent,
   convertDateISO,
 } from "../../utils";
@@ -14,12 +14,13 @@ import * as OrderService from "../../services/OrderServices";
 import { orderContant } from "../../contant";
 import PieChartComponent from "./PieChart";
 import { useMutationHooks } from "../../hooks/useMutationHook";
-import { Button, Dropdown, Image, Menu, Space, Table } from "antd";
+import { Button, Dropdown, Image, Menu, Table } from "antd";
+import OrderComposite from "../OrderComposite"; // Import Composite component
 
 const AdminOrder = () => {
-  const [rowSelected, setRowSelected] = useState("");
   const [dataTable, setDataTable] = useState([]);
   const user = useSelector((state) => state?.user);
+
   const getAllOrder = async () => {
     const res = await OrderService.getAllOrder(user?.access_token);
     return res;
@@ -45,6 +46,7 @@ const AdminOrder = () => {
     { label: "Ngày đặt", key: "createdAt" },
     { label: "Ngày cập nhật", key: "updatedAt" },
   ];
+
   const columns = [
     {
       title: "Mã đơn hàng",
@@ -60,7 +62,6 @@ const AdminOrder = () => {
       fixed: "left",
       width: 150,
     },
-
     {
       title: "Tình trạng",
       dataIndex: "orderStatus",
@@ -96,12 +97,10 @@ const AdminOrder = () => {
       sorter: (a, b) => a.isPaid - b.isPaid,
       render: (text, record) => {
         const paidText = record.isPaid ? "Đã thanh toán" : "Chưa thanh toán";
-
         const menuItems = [
           { label: "Đã thanh toán", key: "true" },
           { label: "Chưa thanh toán", key: "false" },
         ];
-
         const menu = (
           <Menu onClick={(e) => handlePaidChange(record._id, e.key)}>
             {menuItems.map((item) => (
@@ -109,7 +108,6 @@ const AdminOrder = () => {
             ))}
           </Menu>
         );
-
         return (
           <Dropdown overlay={menu} trigger={["click"]}>
             <div style={{ display: "flex", justifyContent: "center" }}>
@@ -119,7 +117,6 @@ const AdminOrder = () => {
         );
       },
     },
-
     {
       title: "Phí giao hàng",
       dataIndex: "shippingPrice",
@@ -132,12 +129,6 @@ const AdminOrder = () => {
       sorter: (a, b) => a.paymentMethod.localeCompare(b.paymentMethod),
       width: 175,
     },
-    // {
-    //   title: "Số điện thoại",
-    //   dataIndex: "phone",
-    //   sorter: (a, b) => a.phone.localeCompare(b.phone),
-    //   width: 150,
-    // },
     {
       title: "Địa chỉ",
       dataIndex: "address",
@@ -161,14 +152,11 @@ const AdminOrder = () => {
       dataIndex: "totalPrice",
       fixed: "right",
       sorter: (a, b) => {
-        // Loại bỏ các ký tự không phải số và chuyển chuỗi thành số
-        const totalPriceA = parseFloat(a.totalPrice.replace(/[^\d.-]/g, "")); // Loại bỏ VND
-        const totalPriceB = parseFloat(b.totalPrice.replace(/[^\d.-]/g, "")); // Loại bỏ VND
-
-        return totalPriceA - totalPriceB; // So sánh giá trị số
+        const totalPriceA = parseFloat(a.totalPrice.replace(/[^\d.-]/g, ""));
+        const totalPriceB = parseFloat(b.totalPrice.replace(/[^\d.-]/g, ""));
+        return totalPriceA - totalPriceB;
       },
       render: (text, record) => {
-        // Áp dụng màu nền dựa trên giá trị
         const color = "red";
         return <span style={{ color: color }}>{text}</span>;
       },
@@ -177,7 +165,6 @@ const AdminOrder = () => {
   ];
 
   useEffect(() => {
-    console.log("Orders data: ", orders);
     if (orders?.data) {
       const updatedDataTable = orders.data.map((order) => ({
         ...order,
@@ -195,11 +182,10 @@ const AdminOrder = () => {
         createdAt: convertDateISO(order?.createdAt),
         updatedAt: convertDateISO(order?.updatedAt),
       }));
-      setDataTable(updatedDataTable); // Cập nhật trạng thái dataTable
+      setDataTable(updatedDataTable);
     }
   }, [orders]);
 
-  //updateStatusOrder
   const mutationUpdate = useMutationHooks((data) => {
     const { id, token, ...rests } = data;
     return OrderService.updateOrder(id, token, { ...rests });
@@ -214,7 +200,6 @@ const AdminOrder = () => {
       },
       {
         onSuccess: () => {
-          // Cập nhật dataTable sau khi thay đổi trạng thái thành công
           setDataTable((prevData) =>
             prevData.map((order) =>
               order.key === orderId
@@ -228,7 +213,7 @@ const AdminOrder = () => {
   };
 
   const handlePaidChange = (orderId, paid) => {
-    const isPaidValue = paid === "true"; // Convert string to boolean
+    const isPaidValue = paid === "true";
     mutationUpdate.mutate(
       {
         id: orderId,
@@ -239,20 +224,14 @@ const AdminOrder = () => {
         onSuccess: () => {
           setDataTable((prevData) =>
             prevData.map((order) =>
-              order.key === orderId
-                ? { ...order, isPaid: isPaidValue } // Update isPaid value
-                : order
+              order.key === orderId ? { ...order, isPaid: isPaidValue } : order
             )
           );
         },
       }
     );
   };
-  const rowSelection = {
-    getCheckboxProps: () => ({
-      disabled,
-    }),
-  };
+
   return (
     <div>
       <WrapperHeader> Quản lý đơn hàng </WrapperHeader>
@@ -277,11 +256,10 @@ const AdminOrder = () => {
           columns={columns}
           isLoading={isLoadingOrders}
           data={dataTable}
-          rowSelected={""}
           expandable={{
             expandedRowRender: (record) => (
               <div>
-                {/* Hiển thị các thông tin khác như địa chỉ, thành phố, mã giảm giá, tỷ lệ giảm giá */}
+                {/* Thông tin bổ sung */}
                 <div
                   style={{
                     display: "flex",
@@ -315,42 +293,14 @@ const AdminOrder = () => {
                       : "Không có giảm giá"}
                   </div>
                 </div>
-
-                {/* Hiển thị thông tin các sản phẩm trong order */}
-                {record.orderItems.map((item, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      marginBottom: "3px",
-                      padding: "2px",
-                      borderBottom: "1px solid #ddd",
-                      display: "flex",
-                      gap: "10px",
-                    }}
-                  >
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        marginLeft: "8px",
-                        borderRadius: "3px",
-                      }}
-                    />
-                    <p>{item.name}</p>
-                    <p>
-                      <strong>x{item.amount}</strong>
-                    </p>
-                    <p>Giá: {item.price.toLocaleString()} VND</p>
-                  </div>
-                ))}
+                {/* Sử dụng Composite Pattern để hiển thị các sản phẩm trong order */}
+                <OrderComposite orderItems={record.orderItems} />
               </div>
             ),
           }}
           scroll={{
             x: 1000,
-            y: 450, // Đảm bảo cuộn dọc có đủ không gian
+            y: 450,
           }}
         />
       </div>

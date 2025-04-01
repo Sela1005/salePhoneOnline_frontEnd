@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { WapperUploadFile, WrapperHeader } from "./style";
-import { Button, Form, Space } from "antd";
+import { Button, Form, Input, Modal, Select, Space } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -36,6 +36,17 @@ const AdminUser = ({ theme, setTheme }) => {
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
 
   const user = useSelector((state) => state?.user);
+
+  // Thêm các state mới
+  const [isModalAdd, setIsModalAdd] = useState(false);
+  const [userRole, setUserRole] = useState("NhanVienIT");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "NhanVienIT",
+  });
 
   const [stateUserDetails, setStateUserDetails] = useState({
     name: "",
@@ -124,6 +135,40 @@ const AdminUser = ({ theme, setTheme }) => {
         },
       }
     );
+  };
+
+  // Thêm mutation để tạo user
+  const mutationAdd = useMutationHooks((data) => {
+    const { name, email, password, confirmPassword, role } = data;
+    const res = UserService.registerUser({
+      name,
+      email,
+      password,
+      confirmPassword,
+      role,
+    });
+    return res;
+  });
+
+  // Thêm handler xử lý form submit
+  const handleAddUser = () => {
+    mutationAdd.mutate(formData, {
+      onSuccess: () => {
+        message.success("Tạo tài khoản thành công");
+        setIsModalAdd(false);
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          role: "NhanVienIT",
+        });
+        queryUser.refetch();
+      },
+      onError: (error) => {
+        message.error(error.message);
+      },
+    });
   };
 
   const handleCancelDrawer = () => {
@@ -384,12 +429,93 @@ const AdminUser = ({ theme, setTheme }) => {
     );
   };
   // background: themeConstant[theme].background,
+
+  // Thêm modal form tạo user
+  const renderAddUserModal = () => {
+    return (
+      <Modal
+        title="Tạo tài khoản mới"
+        open={isModalAdd}
+        onOk={handleAddUser}
+        onCancel={() => setIsModalAdd(false)}
+      >
+        <Form layout="vertical">
+          <Form.Item label="Tên người dùng">
+            <Input
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+            />
+          </Form.Item>
+
+          <Form.Item label="Email">
+            <Input
+              value={formData.email}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+            />
+          </Form.Item>
+
+          <Form.Item label="Mật khẩu">
+            <Input.Password
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+            />
+          </Form.Item>
+
+          <Form.Item label="Xác nhận mật khẩu">
+            <Input.Password
+              value={formData.confirmPassword}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
+            />
+          </Form.Item>
+
+          <Form.Item label="Vai trò">
+            <Select
+              value={formData.role}
+              onChange={(value) => setFormData({ ...formData, role: value })}
+            >
+              <Select.Option value="NhanVienIT">Nhân viên IT</Select.Option>
+              <Select.Option value="KeToan">Kế toán</Select.Option>
+              <Select.Option value="ThuKho">Thủ kho</Select.Option>
+              <Select.Option value="QuanLy">Quản lý</Select.Option>
+            </Select>
+          </Form.Item>
+        </Form>
+      </Modal>
+    );
+  };
+
+  // Thêm nút tạo user mới vào giao diện chính
+  const renderHeader = () => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+        }}
+      >
+        <Button type="primary" onClick={() => setIsModalAdd(true)}>
+          Thêm Nhân Viên
+        </Button>
+      </div>
+    );
+  };
   return (
     <div>
       <WrapperHeader style={{ color: themeConstant[theme].color }}>
         {" "}
         Quản lý người dùng{" "}
       </WrapperHeader>
+      {renderHeader()}
       <div style={{ marginTop: "30px" }}>
         <TableComponent
           title={() => (
@@ -603,6 +729,7 @@ const AdminUser = ({ theme, setTheme }) => {
           <div>Bạn có muốn xóa người dùng này không</div>
         </Loading>
       </ModalComponent>
+      {renderAddUserModal()}
     </div>
   );
 };

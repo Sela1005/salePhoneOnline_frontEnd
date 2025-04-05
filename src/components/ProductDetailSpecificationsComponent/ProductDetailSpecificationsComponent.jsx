@@ -30,20 +30,24 @@ const ProductDetailSpecificationsComponent = ({
             <TableCell>{screenSize || " "}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Công nghệ màn hình</TableCell>
-            <TableCell>{""}</TableCell>
+            <TableCell>Chip</TableCell>
+            <TableCell>{chipset || ""}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Dung lượng RAM</TableCell>
+            <TableCell>{ram || ""}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Bộ nhớ trong</TableCell>
+            <TableCell>{storage || ""}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Dung lượng Pin</TableCell>
+            <TableCell>{battery || ""}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Độ phân giải màn hình</TableCell>
             <TableCell>{screenResolution || ""}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Tính năng màn hình</TableCell>
-            <TableCell>{""}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Camera sau</TableCell>
-            <TableCell>{""}</TableCell>
           </TableRow>
         </tbody>
       </Table>
@@ -88,6 +92,10 @@ const ProductDetailSpecificationsComponent = ({
           <TableRow>
             <TableCell>Pin</TableCell>
             <TableCell>{battery || ""}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Độ phân giải màn hình</TableCell>
+            <TableCell>{screenResolution || ""}</TableCell>
           </TableRow>
         </tbody>
       </Table>

@@ -11,6 +11,7 @@ import {
   Space,
 } from "antd";
 import {
+  BoldOutlined,
   DeleteOutlined,
   EditOutlined,
   InfoCircleOutlined,
@@ -113,9 +114,19 @@ const AdminProduct = () => {
     stateProductDetails?.storage ||
     stateProductDetails?.battery ||
     stateProductDetails?.screenResolution;
+
   const mutationUpdate = useMutationHooks((data) => {
     const { id, token, ...rests } = data;
-    const res = ProductService.updateProduct(id, token, { ...rests });
+    // Bao gồm tất cả các trường trong request cập nhật
+    const res = ProductService.updateProduct(id, token, {
+      ...rests,
+      screenSize: rests.screenSize || "",
+      chipset: rests.chipset || "",
+      ram: rests.ram || "",
+      storage: rests.storage || "",
+      battery: rests.battery || "",
+      screenResolution: rests.screenResolution || "",
+    });
     return res;
   });
 
@@ -381,6 +392,7 @@ const AdminProduct = () => {
   };
   const headers = [
     { label: "Id products", key: "key" },
+    { label: "Ảnh", key: "image" },
     { label: "Name products", key: "name" },
     { label: "Price", key: "price" },
     { label: "Type", key: "type" },
@@ -522,6 +534,21 @@ const AdminProduct = () => {
       ...getColumnSearchProps("key"),
     },
     {
+      title: "Ảnh sản phẩm",
+      dataIndex: "image",
+      render: (images) => {
+        return (
+          <Image
+            src={Array.isArray(images) ? images[0] : images}
+            alt="product-image"
+            width={70}
+            height={70}
+            style={{ objectFit: "contain" }}
+          />
+        );
+      },
+    },
+    {
       title: "Tên sản phẩm",
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
@@ -532,8 +559,9 @@ const AdminProduct = () => {
       dataIndex: "price",
       sorter: (a, b) => parseFloat(a.price) - parseFloat(b.price),
       render: (text, record) => {
-        const color = "red";
-        return <span style={{ color: color }}>{text}</span>;
+        return (
+          <span style={{ color: "#5b9ee1", fontStyle: "16px" }}>{text}</span>
+        );
       },
     },
     {
@@ -903,7 +931,7 @@ const AdminProduct = () => {
             </Form.Item>
 
             <Form.Item
-              label="Loại sản phẩm:"
+              label="Hãng:"
               name="type"
               rules={[
                 {
@@ -912,12 +940,33 @@ const AdminProduct = () => {
                 },
               ]}
             >
-              <InputComponent
-                value={stateProductDetails.type}
-                onChange={handleOnchangeDetails}
+              <Select
                 name="type"
+                value={stateProductDetails.type}
+                onChange={handleChangeSelect}
+                options={renderOption(typeProduct?.data?.data)}
               />
             </Form.Item>
+            {stateProductDetails.type === "add_type" && (
+              <Form.Item
+                label="Hãng mới:"
+                name="newType"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng không bỏ trống!",
+                  },
+                ]}
+              >
+                <div style={{ padding: "10px" }}>
+                  <InputComponent
+                    value={stateProductDetails.newType}
+                    onChange={handleOnchange}
+                    name="newType"
+                  />
+                </div>
+              </Form.Item>
+            )}
 
             <Form.Item
               label="Số lượng còn lại:"
@@ -984,6 +1033,7 @@ const AdminProduct = () => {
               <WapperUploadFile
                 onChange={handleOnchangeAvatarDetails}
                 maxCount={5}
+                multiple
               >
                 <Button icon={<UploadOutlined />}>Select Files</Button>
               </WapperUploadFile>
@@ -1008,57 +1058,52 @@ const AdminProduct = () => {
                   </div>
                 )}
             </Form.Item>
-            {checkValueStateDetail && (
-              <div>
-                <h4>Thông số kỹ thuật:</h4>
-                <Form.Item label="Kích thước màn hình:" name="screenSize">
-                  <InputComponent
-                    value={stateProductDetails?.screenSize}
-                    onChange={handleOnchangeDetails}
-                    name="screenSize"
-                  />
-                </Form.Item>
-                <Form.Item label="Chipset:" name="chipset">
-                  <InputComponent
-                    value={stateProductDetails?.chipset}
-                    onChange={handleOnchangeDetails}
-                    name="chipset"
-                  />
-                </Form.Item>
-                <Form.Item label="Dung lượng RAM:" name="ram">
-                  <InputComponent
-                    value={stateProductDetails?.ram}
-                    onChange={handleOnchangeDetails}
-                    name="ram"
-                  />
-                </Form.Item>
-                <Form.Item label="Bộ nhớ trong:" name="storage">
-                  <InputComponent
-                    value={stateProductDetails?.storage}
-                    onChange={handleOnchangeDetails}
-                    name="storage"
-                  />
-                </Form.Item>
+            <h4>Thông số kỹ thuật:</h4>
+            <Form.Item label="Kích thước màn hình:" name="screenSize">
+              <InputComponent
+                value={stateProductDetails.screenSize}
+                onChange={handleOnchangeDetails}
+                name="screenSize"
+              />
+            </Form.Item>
 
-                <Form.Item label="Pin:" name="battery">
-                  <InputComponent
-                    value={stateProductDetails?.battery}
-                    onChange={handleOnchangeDetails}
-                    name="battery"
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="Độ phân giải màn hình:"
-                  name="screenResolution"
-                >
-                  <InputComponent
-                    value={stateProductDetails?.screenResolution}
-                    onChange={handleOnchangeDetails}
-                    name="screenResolution"
-                  />
-                </Form.Item>
-              </div>
-            )}
+            <Form.Item label="Chip:" name="chipset">
+              <InputComponent
+                value={stateProductDetails.chipset}
+                onChange={handleOnchangeDetails}
+                name="chipset"
+              />
+            </Form.Item>
+
+            <Form.Item label="RAM:" name="ram">
+              <InputComponent
+                value={stateProductDetails.ram}
+                onChange={handleOnchangeDetails}
+                name="ram"
+              />
+            </Form.Item>
+
+            <Form.Item label="Bộ nhớ trong:" name="storage">
+              <InputComponent
+                value={stateProductDetails.storage}
+                onChange={handleOnchangeDetails}
+                name="storage"
+              />
+            </Form.Item>
+            <Form.Item label="Pin:" name="battery">
+              <InputComponent
+                value={stateProductDetails.battery}
+                onChange={handleOnchangeDetails}
+                name="battery"
+              />
+            </Form.Item>
+            <Form.Item label="Độ phân giải màn hình:" name="screenResolution">
+              <InputComponent
+                value={stateProductDetails.screenResolution}
+                onChange={handleOnchangeDetails}
+                name="screenResolution"
+              />
+            </Form.Item>
             <Form.Item
               wrapperCol={{
                 offset: 20,
